@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "trek": {
+      "title": "Trek",
+      "description": "A trekking route with all its intelligence data.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "location": { "type": "string" },
+        "difficulty": { "type": "string", "enum": ["Easy", "Moderate", "Hard", "Expert"] },
+        "distance": { "type": "number" },
+        "duration": { "type": "string" },
+        "elevationGain": { "type": "number" },
+        "maxAltitude": { "type": "number" },
+        "description": { "type": "string" },
+        "terrain": { "type": "array", "items": { "type": "string" } },
+        "bestTime": { "type": "string" },
+        "fitnessRequirement": { "type": "string" },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        }
+      },
+      "required": ["name", "location", "difficulty", "distance"]
+    },
+    "communityUpdate": {
+      "title": "Community Update",
+      "description": "Real-time trail updates from trekkers.",
+      "type": "object",
+      "properties": {
+        "trekId": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "content": { "type": "string" },
+        "type": { "type": "string", "enum": ["Weather", "Trail Blocked", "Water Source", "General"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["trekId", "authorUid", "content", "type", "timestamp"]
+    },
+    "userProfile": {
+      "title": "User Profile",
+      "description": "User experience and fitness data.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "experience": { "type": "string" },
+        "fitnessLevel": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] }
+      },
+      "required": ["uid", "name", "email"]
+    },
+    "liveLocation": {
+      "title": "Live Location",
+      "description": "Real-time GPS coordinates of a trekker.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "trekId": { "type": "string" },
+        "trekName": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "sharingWith": { "type": "array", "items": { "type": "string" }, "description": "List of emails or UIDs to share with" }
+      },
+      "required": ["userId", "latitude", "longitude", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/treks/{trekId}": {
+      "schema": "trek",
+      "description": "Global trek database."
+    },
+    "/treks/{trekId}/updates/{updateId}": {
+      "schema": "communityUpdate",
+      "description": "Real-time community updates for a specific trek."
+    },
+    "/users/{userId}": {
+      "schema": "userProfile",
+      "description": "Private user profiles."
+    },
+    "/locations/{userId}": {
+      "schema": "liveLocation",
+      "description": "Real-time GPS coordinates of a trekker."
+    }
+  }
+}

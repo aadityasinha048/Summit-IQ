@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidLocation(data) {
+      return data.userId is string &&
+             data.latitude is number &&
+             data.longitude is number &&
+             data.timestamp != null &&
+             (!('sharingWith' in data) || data.sharingWith is list);
+    }
+
+    match /treks/{trekId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+      match /updates/{updateId} {
+        allow read: if true;
+        allow create: if isAuthenticated();
+        allow update, delete: if isAuthenticated() && resource.data.authorUid == request.auth.uid;
+      }
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+
+    match /locations/{userId} {
+      allow read: if isAuthenticated() && (
+        isOwner(userId) || 
+        (resource != null && 'sharingWith' in resource.data && (request.auth.token.email in resource.data.sharingWith || request.auth.uid in resource.data.sharingWith))
+      );
+      allow write: if isOwner(userId) && isValidLocation(request.resource.data);
+    }
+  }
+}
