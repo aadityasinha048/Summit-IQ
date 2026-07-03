@@ -1,6 +1,6 @@
 {
   "name": "SummitIQ",
-  "description": "A global pre-trek intelligence platform for route guidance, weather alerts, and safety analysis.",
+  "description": "Global pre-trek intelligence platform featuring an autonomous AI Expedition Planner Agent, 3D trek maps, and real-time safety monitoring.",
   "requestFramePermissions": ["geolocation"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

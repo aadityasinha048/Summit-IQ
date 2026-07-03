@@ -69,6 +69,20 @@
         "sharingWith": { "type": "array", "items": { "type": "string" }, "description": "List of emails or UIDs to share with" }
       },
       "required": ["userId", "latitude", "longitude", "timestamp"]
+    },
+    "expeditionPlan": {
+      "title": "Expedition Plan",
+      "description": "An AI-generated expedition plan for a trek.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "trekName": { "type": "string" },
+        "userInput": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "plan": { "type": "object" }
+      },
+      "required": ["id", "userId", "trekName", "plan", "createdAt"]
     }
   },
   "firestore": {
@@ -87,6 +101,10 @@
     "/locations/{userId}": {
       "schema": "liveLocation",
       "description": "Real-time GPS coordinates of a trekker."
+    },
+    "/expeditions/{planId}": {
+      "schema": "expeditionPlan",
+      "description": "User saved expedition plans and histories."
     }
   }
 }

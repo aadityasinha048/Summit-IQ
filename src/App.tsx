@@ -12,7 +12,8 @@ import {
   AlertTriangle,
   ChevronRight,
   Menu,
-  X
+  X,
+  Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { Trek } from './types';
@@ -20,6 +21,7 @@ import { MOCK_TREKS } from './mockData';
 import { TrekCard } from './components/TrekCard';
 import { TrekDetail } from './components/TrekDetail';
 import { WeatherModule, HealthModule, PackingModule, SafetyModule } from './components/Modules';
+import { AIExpeditionPlanner } from './components/AIExpeditionPlanner';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -90,11 +92,33 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="max-w-7xl mx-auto"
+            className="max-w-7xl mx-auto space-y-8"
           >
-            <div className="mb-10">
-              <h2 className="text-3xl sm:text-4xl font-display font-bold mb-2">Pre-Trek Intelligence</h2>
-              <p className="text-sm sm:text-base text-brand-muted">Select a mission to begin your intelligence briefing.</p>
+            {/* AI Expedition Planner Promo Card */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 rounded-2xl border border-brand-primary/20 bg-gradient-to-r from-brand-primary/10 via-brand-primary/5 to-transparent relative overflow-hidden">
+              <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-[radial-gradient(circle_at_right_center,rgba(242,125,38,0.08)_0%,transparent_70%)] pointer-events-none" />
+              <div className="space-y-1 z-10">
+                <div className="flex items-center gap-2">
+                  <span className="bg-brand-primary text-white text-[9px] uppercase tracking-wider font-mono px-2 py-0.5 rounded-full font-bold">Premium Feature</span>
+                  <span className="text-[10px] text-brand-primary font-mono font-bold tracking-widest uppercase flex items-center gap-1">
+                    <Sparkles size={10} className="animate-pulse" /> Autonomous Planning
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-white mt-1">AI Expedition Planner Agent</h3>
+                <p className="text-xs sm:text-sm text-brand-muted max-w-xl">Coordinated multi-module analysis. Generate full-scale safety briefings, tactical itineraries, packing checklists, and currency budgets instantly with agent intelligence.</p>
+              </div>
+              <Button 
+                onClick={() => setActiveModule('AI Expedition Planner')} 
+                className="bg-brand-primary hover:bg-brand-primary/90 text-white flex items-center gap-2 rounded-xl shrink-0 h-11 text-xs px-5 shadow-lg shadow-brand-primary/25 z-10"
+              >
+                <Sparkles size={14} className="animate-pulse" />
+                Launch Planner Agent
+              </Button>
+            </div>
+
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-display font-bold mb-2">Pre-Trek Intelligence</h2>
+              <p className="text-sm text-brand-muted">Select a mission below to begin your static intelligence briefing, or use the planner agent above.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -108,6 +132,8 @@ export default function App() {
             </div>
           </motion.div>
         );
+      case 'AI Expedition Planner':
+        return <AIExpeditionPlanner />;
       case 'Weather Intel':
         return <WeatherModule />;
       case 'Health Monitor':
@@ -164,6 +190,12 @@ export default function App() {
             </div>
 
             <nav className="flex-1 px-4 mt-2 space-y-1">
+              <SidebarItem 
+                icon={<Sparkles size={18} />} 
+                label="AI Expedition Planner" 
+                active={activeModule === 'AI Expedition Planner'} 
+                onClick={() => { setActiveModule('AI Expedition Planner'); setSelectedTrek(null); setIsSidebarOpen(false); }}
+              />
               <SidebarItem 
                 icon={<MapIcon size={18} />} 
                 label="Explore Treks" 
